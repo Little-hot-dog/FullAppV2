@@ -1,0 +1,43 @@
+{% extends 'main/base.html' %}
+
+{% block problem_pc_list %}
+  <div class="container mt-4">
+    <h2>Список проблемных ПК</h2>
+
+    <!-- Форма фильтрации (можно расширить в будущем) -->
+    <form method="get" action="{% url 'problem_pc_list' %}" class="mb-4">
+      {% csrf_token %}
+    </form>
+
+    {% if problematic_pcs %}
+      <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+          <thead class="table-dark">
+            <tr>
+              <th>Хост</th>
+              <th>Проблемные параметры</th>
+              <th>Значение</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for pc in problematic_pcs %}
+              <tr>
+                <td>{{ pc.host }}</td>
+                <td>
+                  <ul class="list-unstyled mb-0">
+                    {% for issue in pc.issues %}
+                      <li>{{ issue.param }}</li>
+                    {% endfor %}
+                  </ul>
+                </td>
+                <td>{{ pc.value }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="text-muted">Нет проблемных ПК.</p>
+    {% endif %}
+  </div>
+{% endblock %}
