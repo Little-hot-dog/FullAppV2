@@ -1,10 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'main/base.html' %}
+{% block analitic %}
 
-</body>
-</html>
+Аналитика
+<ul>
+    {% for param_key, param_values in analitic_answer.items %}
+        <li>{{ param_key }}</li>
+        <ul>
+            {% for value_key, value in param_values.items %}
+                <li>{{ value_key }}: {{ value }} </li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+</ul>  
+
+{% endblock %}

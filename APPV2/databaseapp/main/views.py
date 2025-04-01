@@ -13,6 +13,31 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+def analitic(reqeust):
+    analitic_answer = {}#словарь {'lan': {'yes': 3, 'no': 4}, 'mem'...}
+    actual_sys_info_list = fetch_actual_data_from_fastapi()
+
+    for item in actual_sys_info_list:
+        if item['param'] not in analitic_answer.keys():
+            analitic_answer.setdefault(item['param'])
+            analitic_answer[f'{item['param']}'] = {f'{item['value']}': 1}
+            continue
+            # print(f'{item['param']} -> {item['value']} -> {analitic_answer[f'{item['param']}'][f'{item['value']}']}')
+
+        if item['param'] in analitic_answer.keys() and item['value'] not in analitic_answer[f'{item['param']}']:
+            analitic_answer[f'{item['param']}'].update({f'{item['value']}': 1})
+            continue
+            # print(f'{item['param']} -> {item['value']} -> {analitic_answer[f'{item['param']}'][f'{item['value']}']}')
+
+        if item['param'] in analitic_answer.keys() and item['value'] in analitic_answer[f'{item['param']}']:
+            analitic_answer[f'{item['param']}'][f'{item['value']}'] += 1
+            continue
+            # print(f'{item['param']} -> {item['value']} -> {analitic_answer[f'{item['param']}'][f'{item['value']}']}')
+
+    return render(reqeust, 'main/analitic.html', {'analitic_answer': analitic_answer})
+
+
+
 def fetch_data_from_fastapi(params):
     api_url = "http://127.0.0.1:8000/get-filtered-system-info/"
     # logger.debug(f"Sending request to {api_url} with params: {params}")
@@ -62,14 +87,14 @@ def fetch_actual_data_from_fastapi():
     return []
 
 def update_pc_list(request):
-    params = []
     all_sys_info_list = fetch_actual_data_from_fastapi()
-    last = ""
+
     sys_info_list = []
+    unique = []
     for item in all_sys_info_list:
-        if last != item['host']:
+        if item['host'] not in unique:
             sys_info_list.append(item)
-        last = str(item['host'])
+            unique.append(item['host'])
     return render(request, 'main/update_pc_list.html', {'sys_info_list': sys_info_list})
 
 def fetch_actual_pc(id_raw):

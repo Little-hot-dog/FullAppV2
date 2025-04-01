@@ -11,4 +11,6 @@ urlpatterns = [
     path('problem-pc-list', views.problem_pc_list, name='problem_pc_list'),
     path('update-pc-list/', views.update_pc_list, name='update_pc_list'),
     path('update-pc<int:id_raw>/', views.update_pc, name='update_pc'),
+    path('analitic', views.analitic, name='analitic'),
+
 ]

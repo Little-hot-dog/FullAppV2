@@ -81,10 +81,7 @@ async def get_actual_system_info(db: Session = Depends(get_db)):
     try:
         # Подзапрос для выбора максимального id_raw для каждого host
         subquery = (
-            db.query(
-                SystemInfo.host,
-                func.max(SystemInfo.id_raw).label("max_id_raw")
-            )
+            db.query(SystemInfo.host,func.max(SystemInfo.id_raw).label("max_id_raw"))
             .group_by(SystemInfo.host)
             .subquery()
         )

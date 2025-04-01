@@ -18,7 +18,7 @@ class SystemInfoResponse(BaseModel):
     time_date: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class RawDataUpdate(BaseModel):
@@ -45,4 +45,4 @@ class CriticalPointResponse(BaseModel):
     string_value: Optional[str] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
