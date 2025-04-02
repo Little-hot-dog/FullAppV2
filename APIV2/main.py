@@ -59,7 +59,7 @@ async def update_pc(id_raw: int, data: SystemInfoUpdate, db: Session = Depends(g
     try:
         # Обновление данных в таблице system_info
         update_pc_to_table(id_raw, data.data, db)
-        return {"message": f"PC with id_raw {id_raw} updated successfully"}
+        return {"message": f"ПК с id_raw: {id_raw} успешно обновлен"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
 
@@ -68,7 +68,7 @@ async def delete_data(id_raw: Annotated[int, Path(..., title="Укажите и�
                       db: Session = Depends(get_db)):
     params = db.query(SystemInfo).filter(SystemInfo.id_raw == id_raw).all()
     if not params:
-        raise HTTPException(status_code=404, detail="Такого  в таблице system-info не найдено")
+        raise HTTPException(status_code=404, detail=f"Такого {id_raw} в таблице system-info не найдено")
     for param in params:
         db.delete(param)
 
@@ -178,7 +178,7 @@ async def get_data(host: Annotated[str, Path(..., title="Укажите имя h
 @app.get("/get-filtered-system-info/", response_model=List[SystemInfoResponse])
 async def get_filtred_info(hosts: Optional[List[str]] = Query(default = None, title='Укажите host для фильтрации'),
                            params: Optional[List[str]] = Query(default = None, title='Укажите host для фильтрации'),
-                           values: Optional[List[str]] = Query(default = None, title='Укажите host для фильтрации'),
+                           values: Optional[List[str]] = Query(default = None, title='Укажите value для фильтрации'),
                             start_date: Optional[datetime] = Query(default=None, title='Начальная дата для фильтрации'),
                             end_date: Optional[datetime] = Query(default=None, title='Конечная дата для фильтрации'),
                            db: Session = Depends(get_db)):
@@ -190,7 +190,7 @@ async def get_filtred_info(hosts: Optional[List[str]] = Query(default = None, ti
         query = query.filter(SystemInfo.param.in_(params))
 
     if values:
-        query = query.filter(SystemInfo.param.in_(values))
+        query = query.filter(SystemInfo.value.in_(values))
 
     if start_date:
         query = query.filter(SystemInfo.time_date >= start_date)

@@ -33,10 +33,8 @@ def analitic(reqeust):
             analitic_answer[f'{item['param']}'][f'{item['value']}'] += 1
             continue
             # print(f'{item['param']} -> {item['value']} -> {analitic_answer[f'{item['param']}'][f'{item['value']}']}')
-
+        
     return render(reqeust, 'main/analitic.html', {'analitic_answer': analitic_answer})
-
-
 
 def fetch_data_from_fastapi(params):
     api_url = "http://127.0.0.1:8000/get-filtered-system-info/"
@@ -188,6 +186,13 @@ def fetch_critical_points():
     else:
         logger.error(f"Error: Received status code {response.status_code}")
     return []
+
+# 
+from django.contrib.auth.decorators import permission_required
+@permission_required('main.can_view_limited', raise_exception=True)
+def limited_view(request):
+    return render(request, 'main/manage_critical_points.html')
+# 
 
 def manage_critical_points(request):
     critical_points = fetch_critical_points()
